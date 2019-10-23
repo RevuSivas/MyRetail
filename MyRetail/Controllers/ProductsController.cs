@@ -8,6 +8,8 @@ using System.Web.Http;
 
 namespace MyRetail.Rest.Controllers
 {
+    // product controller
+
     public class ProductsController : ApiController
     {
         [HttpGet]
