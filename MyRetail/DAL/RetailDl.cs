@@ -15,18 +15,25 @@ namespace MyRetail.Rest.DAL
 
             using (var con = new SqlConnection(strCon))
             {
-                con.Open();
-                DataTable dt = new DataTable();
-                using (var adp = new SqlDataAdapter("Select * from retail.dbo.price", con))
+                try
                 {
-                    adp.Fill(dt);
-                    var prices = dt.AsEnumerable().Select(r => new PriceEntity()
+                    con.Open();
+                    DataTable dt = new DataTable();
+                    using (var adp = new SqlDataAdapter("Select * from retail.dbo.price", con))
                     {
-                        ProductId = long.Parse(r["ProductId"].ToString()),
-                        Value = decimal.Parse(r["value"].ToString()),
-                        CurrencyCode = r["CurrencyCode"].ToString()
-                    }).ToList();
-                    return prices;
+                        adp.Fill(dt);
+                        var prices = dt.AsEnumerable().Select(r => new PriceEntity()
+                        {
+                            ProductId = long.Parse(r["ProductId"].ToString()),
+                            Value = decimal.Parse(r["value"].ToString()),
+                            CurrencyCode = r["CurrencyCode"].ToString()
+                        }).ToList();
+                        return prices;
+                    }
+                }
+                catch(SqlException ex)
+                {
+                    throw new System.Exception(ex.Message);
                 }
             }
         }
@@ -37,12 +44,19 @@ namespace MyRetail.Rest.DAL
 
             using (var con = new SqlConnection(strCon))
             {
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = con;
-                con.Open();
+                try
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = con;
+                    con.Open();
 
-                cmd.CommandText = $"Update retail.dbo.price set value = {price} where productId = {productId}";
-                cmd.ExecuteNonQuery();
+                    cmd.CommandText = $"Update retail.dbo.price set value = {price} where productId = {productId}";
+                    cmd.ExecuteNonQuery();
+                }
+                catch(SqlException ex)
+                {
+                    throw new System.Exception(ex.Message);
+                }
             }
         }
     }

@@ -27,7 +27,7 @@ namespace MyRetail.Rest.Tests.Controller
         }
 
         [TestMethod]
-        public void GetProduct_BadRequest_If_ProductIs_Is_Zero()
+        public void GetProduct_BadRequest_If_ProductIs_Zero()
         {
             // Arrange
             var id = 0;

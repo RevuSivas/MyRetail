@@ -8,10 +8,14 @@ using System.Web.Http;
 
 namespace MyRetail.Rest.Controllers
 {
-    // product controller
-
     public class ProductsController : ApiController
     {
+        private readonly HttpClient httpClient;
+        public ProductsController()
+        {
+            httpClient = new HttpClient();
+        }
+
         [HttpGet]
         [Route("api/products/{id:long}")]
         public IHttpActionResult Get(long id)
@@ -20,11 +24,15 @@ namespace MyRetail.Rest.Controllers
             {
                 return BadRequest("Invalid ProductId.");
             }
+
             var url = ConfigurationManager.AppSettings["DataUrl"];
 
-            HttpClient client = new HttpClient();
+            if (string.IsNullOrEmpty(url))
+            {
+                return BadRequest("Invalid URI.");
+            }
 
-            var response = client.GetAsync(url).Result;
+            var response = httpClient.GetAsync(url).Result;
             if (!response.IsSuccessStatusCode)
             {
                 return BadRequest("Product not found.");
